@@ -30,7 +30,7 @@
                         <tr>
                             <td><strong>{{ materia.nome }}</strong></td>
                             <td>{{ materia.horas_necessarias }}h</td>
-                            <td>{{ materia.dificuldade }}/10</td>
+                            <td>{{ materia.dificuldade }}/5</td>
                             <td>{{ materia.dias_prova }} dias</td>
                         </tr>
                         {% endfor %}
@@ -46,16 +46,16 @@
                 
                 <div class="header-inputs">
                     <label for="tempo_livre">Horas disponíveis hoje:</label>
-                    <input type="number" step="0.5" id="tempo_livre" name="tempo_livre" required placeholder="Ex: 4.5">
+                    <input type="number" step="0.5" min="0" id="tempo_livre" name="tempo_livre" required placeholder="Ex: 4.5">
                 </div>
 
                 <div class="main-box">
 
                     <div class="input-row">
                         <input type="text" id="novo_nome" placeholder="MATÉRIA" class="input-materia">
-                        <input type="number" step="0.5" id="novas_horas" placeholder="HORAS" class="input-pequeno">
-                        <input type="number" id="nova_dif" placeholder="DIFICULDADE" class="input-pequeno">
-                        <input type="number" id="novos_dias" placeholder="DIAS PROVA" class="input-pequeno">
+                        <input type="number" step="0.5" min="0" id="novas_horas" placeholder="HORAS" class="input-pequeno">
+                        <input type="number" min="1" max="5" id="nova_dif" placeholder="DIFICULDADE" class="input-pequeno">
+                        <input type="number" min="0" id="novos_dias" placeholder="DIAS PROVA" class="input-pequeno">
                         <button type="button" class="btn-add" onclick="adicionarMateria()">+</button>
                     </div>
 
@@ -80,6 +80,16 @@
 
             if (!nome || !horas || !dif || !dias) {
                 alert("Por favor, preencha todos os campos da matéria antes de adicionar.");
+                return;
+            }
+
+            if (dif < 1 || dif > 5) {
+                alert("A dificuldade deve ser um número entre 1 e 5.");
+                return;
+            }
+
+            if (horas < 0 || dias < 0) {
+                alert("As horas e os dias não podem ser negativos.");
                 return;
             }
 
