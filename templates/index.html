@@ -4,104 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planejador Inteligente de Estudos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="container">
+        <h1>Planejador de Estudos</h1>
 
-    <h1>Planejador Inteligente de Estudos</h1>
-    <p>Otimize seu tempo de estudo.</p>
+        {% if gerou %}
 
-    <hr>
-
-    <h2>Cadastrar Dados</h2>
-    <form action="/gerar_plano" method="POST">
-
-        <div>
-            <label for="tempo_livre">Tempo disponível hoje (em horas):</label><br>
-            <input type="number" id="tempo_livre" name="tempo_livre" step="0.5" min="0.5" required placeholder="Ex: 4.5">
-        </div>
-
-        <br>
-
-        <h3>Disciplinas para Avaliar</h3>
-
-        <div id="disciplinas_container">
-            <div class="disciplina-item">
-                <h4>Disciplina 1</h4>
-                <label>Matéria: <input type="text" name="materia[]" placeholder="Ex: Cálculo" required></label><br>
-                <label>Horas: <input type="number" step="0.5" min="0.5" name="horas[]" required></label><br>
-                <label>Dificuldade (1-5): <input type="number" min="1" max="5" name="dif[]" required></label><br>
-                <label>Dias para a Prova: <input type="number" min="0" name="dias[]" required></label><br>
-                <hr>
+            <div class="resultado-box">
+                <h2>SEU PLANO DE ESTUDOS OTIMIZADO:</h2>
+                <p><strong>Tempo Disponível:</strong> {{ request.form.get('tempo_livre') }}h</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Disciplina</th>
+                            <th>Tempo Necessário</th>
+                            <th>Dificuldade</th>
+                            <th>Dias para Prova</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in plano %}
+                        <tr>
+                            <td><strong>{{ materia.nome }}</strong></td>
+                            <td>{{ materia.horas_necessarias }}h</td>
+                            <td>{{ materia.dificuldade }}/10</td>
+                            <td>{{ materia.dias_prova }} dias</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p style="margin-top: 1rem; text-align: right;"><strong>Score Total (Valor Máx.): {{ ganho }}</strong></p>
+                
+                <a href="/" class="link-voltar">&larr; Criar novo plano</a>
             </div>
-        </div>
+        {% else %}
 
-        <button type="button" onclick="adicionarDisciplina()">+ Adicionar Matéria</button>
+            <form action="/gerar_plano" method="POST" id="estudo-form">
+                
+                <div class="header-inputs">
+                    <label for="tempo_livre">Horas disponíveis hoje:</label>
+                    <input type="number" step="0.5" id="tempo_livre" name="tempo_livre" required placeholder="Ex: 4.5">
+                </div>
 
-        <br><br>
-        <button type="submit">Gerar Plano de Estudos</button>
-    </form>
+                <div class="main-box">
 
-    <hr>
+                    <div class="input-row">
+                        <input type="text" id="novo_nome" placeholder="MATÉRIA" class="input-materia">
+                        <input type="number" step="0.5" id="novas_horas" placeholder="HORAS" class="input-pequeno">
+                        <input type="number" id="nova_dif" placeholder="DIFICULDADE" class="input-pequeno">
+                        <input type="number" id="novos_dias" placeholder="DIAS PROVA" class="input-pequeno">
+                        <button type="button" class="btn-add" onclick="adicionarMateria()">+</button>
+                    </div>
 
-    {% if plano is defined and plano != None %}
-        <h2>Resultado da Otimização</h2>
-        
-        <p><strong>Tempo Total Alocado:</strong> {{ tempo_gasto }} horas</p>
-        <p><strong>Pontuação Máxima (Importância Total):</strong> {{ ganho }} pontos</p>
+                    <div id="lista-materias" class="lista-materias">
 
-        <h3>Plano Sugerido:</h3>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Matéria</th>
-                    <th>Tempo a Estudar (Horas)</th>
-                    <th>Dias Restantes</th>
-                </tr>
-            </thead>
-            <tbody>
+                    </div>
+                </div>
 
-                {% for d in plano %}
-                    <tr>
-                        <td>{{ d.nome }}</td>
-                        <td>{{ d.horas_necessarias }}h</td>
-                        <td>{{ d.dias_prova }} dias</td>
-                    </tr>
-                {% else %}
-
-                    <tr>
-                        <td colspan="3">Nenhuma disciplina coube no seu tempo disponível.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
-        <br>
-
-        <a href="/">Fazer novo planejamento</a>
-    {% endif %}
+                <div class="action-row">
+                    <button type="submit" class="btn-gerar">GERAR PLANO</button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
 
     <script>
-        let contador = 1;
+        function adicionarMateria() {
+            const nome = document.getElementById('novo_nome').value;
+            const horas = document.getElementById('novas_horas').value;
+            const dif = document.getElementById('nova_dif').value;
+            const dias = document.getElementById('novos_dias').value;
 
-        function adicionarDisciplina() {
-            contador++;
-            const container = document.getElementById('disciplinas_container');
-            const div = document.createElement('div');
-            div.className = 'disciplina-item';
-            div.innerHTML = `
-                <h4>Disciplina ${contador}</h4>
-                <label>Matéria: <input type="text" name="materia[]" required></label><br>
-                <label>Horas: <input type="number" step="0.5" min="0.5" name="horas[]" required></label><br>
-                <label>Dificuldade (1-5): <input type="number" min="1" max="5" name="dif[]" required></label><br>
-                <label>Dias para a Prova: <input type="number" min="0" name="dias[]" required></label><br>
-                <button type="button" onclick="removerDisciplina(this)">Remover Disciplina</button>
-                <hr>
+            if (!nome || !horas || !dif || !dias) {
+                alert("Por favor, preencha todos os campos da matéria antes de adicionar.");
+                return;
+            }
+
+            const lista = document.getElementById('lista-materias');
+
+            const novaLinha = document.createElement('div');
+            novaLinha.className = 'materia-item';
+            novaLinha.innerHTML = `
+                <input type="text" name="nome[]" value="${nome}" class="input-materia" readonly>
+                <input type="number" step="0.5" name="horas_necessarias[]" value="${horas}" class="input-pequeno" readonly>
+                <input type="number" name="dificuldade[]" value="${dif}" class="input-pequeno" readonly>
+                <input type="number" name="dias_prova[]" value="${dias}" class="input-pequeno" readonly>
+                <button type="button" class="btn-remove" onclick="this.parentElement.remove()" title="Remover">&times;</button>
             `;
-            container.appendChild(div);
-        }
+            
+            lista.appendChild(novaLinha);
 
-        function removerDisciplina(botao) {
-            botao.parentElement.remove();
+            document.getElementById('novo_nome').value = '';
+            document.getElementById('novas_horas').value = '';
+            document.getElementById('nova_dif').value = '';
+            document.getElementById('novos_dias').value = '';
+            document.getElementById('novo_nome').focus();
         }
     </script>
 </body>

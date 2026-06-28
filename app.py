@@ -12,38 +12,32 @@ def gerar_plano():
     try:
 
         tempo_livre = float(request.form.get('tempo_livre', 0))
-        materias = request.form.getlist('materia[]')
-        horas = request.form.getlist('horas[]')
-        dificuldades = request.form.getlist('dif[]')
-        dias_prova = request.form.getlist('dias[]')
-        
+        nomes = request.form.getlist('nome[]')
+        horas = request.form.getlist('horas_necessarias[]')
+        dificuldades = request.form.getlist('dificuldade[]')
+        dias = request.form.getlist('dias_prova[]')
+
         disciplinas = []
+        for i in range(len(nomes)):
+            disciplinas.append({
+                'nome': nomes[i],
+                'horas_necessarias': float(horas[i]),
+                'dificuldade': int(dificuldades[i]),
+                'dias_prova': int(dias[i])
+            })
 
-        for i in range(len(materias)):
-            nome = materias[i]
+        if not disciplinas:
+            return render_template('index.html')
 
-            if nome and nome.strip() != "":
-                disciplinas.append({
-                    "nome": nome,
-                    "horas_necessarias": float(horas[i]),
-                    "dificuldade": int(dificuldades[i]),
-                    "dias_prova": int(dias_prova[i])
-                })
+        plano, ganho = otimizar_estudos(disciplinas, tempo_livre)
 
-        plano, ganho_total = otimizar_estudos(disciplinas, tempo_livre)
-
-        tempo_gasto = sum(d['horas_necessarias'] for d in plano)
-
-        return render_template(
-            'index.html',
-            plano=plano,
-            ganho=ganho_total,
-            tempo_gasto=tempo_gasto,
-            tempo_livre_original=tempo_livre
-        )
+        return render_template('index.html', plano=plano, ganho=ganho, gerou=True)
         
-    except ValueError:
-        return "Erro ao processar os dados. Certifique-se de usar números válidos.", 400
+    except Exception as e:
+
+        print(f"Erro no processamento: {e}")
+        return f"<h1>Erro interno no Python:</h1><p>{e}</p><a href='/'>Voltar</a>"
 
 if __name__ == '__main__':
+
     app.run(debug=True)
