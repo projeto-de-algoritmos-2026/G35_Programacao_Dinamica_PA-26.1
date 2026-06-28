@@ -29,9 +29,10 @@ def gerar_plano():
         if not disciplinas:
             return render_template('index.html')
 
-        plano, ganho = otimizar_estudos(disciplinas, tempo_livre)
+        plano, ganho, matriz_dp = otimizar_estudos(disciplinas, tempo_livre)
 
-        return render_template('index.html', plano=plano, ganho=ganho, gerou=True)
+        return render_template('index.html', plano=plano, ganho=ganho, gerou=True, 
+                               matriz_dp=matriz_dp, disciplinas_completas=disciplinas, W=int(tempo_livre*2))
         
     except Exception as e:
 

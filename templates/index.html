@@ -10,8 +10,7 @@
     <div class="container">
         <h1>Planejador de Estudos</h1>
 
-        {% if gerou %}
-
+{% if gerou %}
             <div class="resultado-box">
                 <h2>SEU PLANO DE ESTUDOS OTIMIZADO:</h2>
                 <p><strong>Tempo Disponível:</strong> {{ request.form.get('tempo_livre') }}h</p>
@@ -36,9 +35,44 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <p style="margin-top: 1rem; text-align: right;"><strong>Score Total (Valor Máx.): {{ ganho }}</strong></p>
+<p style="margin-top: 1rem; text-align: right;"><strong>Score Total (Valor Máx.): {{ ganho }}</strong></p>
                 
-                <a href="/" class="link-voltar">&larr; Criar novo plano</a>
+                <div class="actions-result-row">
+                    <a href="/" class="link-voltar">&larr; Criar novo plano</a>
+                    <button class="btn-toggle" onclick="toggleMatriz()">Ver matriz &darr;</button>
+                </div>
+
+                <div id="matriz-dp" class="matriz-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item \ Tempo</th>
+                                {% for w in range(W + 1) %}
+                                    <th>{{ w }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><strong>0 (Vazio)</strong></td>
+                                {% for val in matriz_dp[0] %}
+                                    <td>{{ val }}</td>
+                                {% endfor %}
+                            </tr>
+
+                            {% for i in range(1, disciplinas_completas|length + 1) %}
+                            <tr>
+                                <td><strong>{{ i }} - {{ disciplinas_completas[i-1].nome }}</strong></td>
+                                {% for val in matriz_dp[i] %}
+                                    <td>{{ val }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         {% else %}
 
@@ -112,6 +146,15 @@
             document.getElementById('nova_dif').value = '';
             document.getElementById('novos_dias').value = '';
             document.getElementById('novo_nome').focus();
+        }
+
+        function toggleMatriz() {
+            const matriz = document.getElementById('matriz-dp');
+            if (matriz.style.display === 'block') {
+                matriz.style.display = 'none';
+            } else {
+                matriz.style.display = 'block';
+            }
         }
     </script>
 </body>

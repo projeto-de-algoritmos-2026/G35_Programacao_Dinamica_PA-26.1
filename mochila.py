@@ -1,7 +1,7 @@
 def calcular_importancia(dificuldade, dias_prova):
 
     dias_reais = max(1, dias_prova)
-    importancia = (dificuldade * 100) / dias_reais
+    importancia = (dificuldade * 10) / dias_reais
     return round(importancia, 2)
 
 def otimizar_estudos(disciplinas, horas_disponiveis):
@@ -38,4 +38,4 @@ def otimizar_estudos(disciplinas, horas_disponiveis):
     itens_selecionados.reverse()
     valor_total = dp[n][W]
     
-    return itens_selecionados, valor_total
+    return itens_selecionados, valor_total, dp

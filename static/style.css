@@ -205,3 +205,64 @@ th {
     text-decoration: none;
     font-weight: bold;
 }
+
+.matriz-container {
+    display: none; 
+    margin-top: 1rem;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+}
+
+.matriz-container table {
+    margin-top: 0;
+    white-space: nowrap; 
+}
+
+.matriz-container th, .matriz-container td {
+    text-align: center;
+    padding: 0.6rem;
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+
+.matriz-container th {
+    background-color: var(--primary);
+    color: white;
+}
+
+.actions-result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.btn-toggle {
+    background: transparent;
+    color: var(--primary);
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    margin-top: 1.5rem;
+}
+
+.btn-toggle:hover {
+    text-decoration: underline;
+    background-color: transparent;
+}
+
+.link-voltar {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link-voltar:hover { 
+    text-decoration: underline; 
+}
