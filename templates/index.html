@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planejador Inteligente de Estudos</title>
+</head>
+<body>
+
+    <h1>Planejador Inteligente de Estudos</h1>
+    <p>Otimize seu tempo de estudo.</p>
+
+    <hr>
+
+    <h2>Cadastrar Dados</h2>
+    <form action="/gerar_plano" method="POST">
+
+        <div>
+            <label for="tempo_livre">Tempo disponível hoje (em horas):</label><br>
+            <input type="number" id="tempo_livre" name="tempo_livre" step="0.5" min="0.5" required placeholder="Ex: 4.5">
+        </div>
+
+        <br>
+
+        <h3>Disciplinas para Avaliar</h3>
+
+        <div id="disciplinas_container">
+            <div class="disciplina-item">
+                <h4>Disciplina 1</h4>
+                <label>Matéria: <input type="text" name="materia[]" placeholder="Ex: Cálculo" required></label><br>
+                <label>Horas: <input type="number" step="0.5" min="0.5" name="horas[]" required></label><br>
+                <label>Dificuldade (1-5): <input type="number" min="1" max="5" name="dif[]" required></label><br>
+                <label>Dias para a Prova: <input type="number" min="0" name="dias[]" required></label><br>
+                <hr>
+            </div>
+        </div>
+
+        <button type="button" onclick="adicionarDisciplina()">+ Adicionar Matéria</button>
+
+        <br><br>
+        <button type="submit">Gerar Plano de Estudos</button>
+    </form>
+
+    <hr>
+
+    {% if plano is defined and plano != None %}
+        <h2>Resultado da Otimização</h2>
+        
+        <p><strong>Tempo Total Alocado:</strong> {{ tempo_gasto }} horas</p>
+        <p><strong>Pontuação Máxima (Importância Total):</strong> {{ ganho }} pontos</p>
+
+        <h3>Plano Sugerido:</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Matéria</th>
+                    <th>Tempo a Estudar (Horas)</th>
+                    <th>Dias Restantes</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for d in plano %}
+                    <tr>
+                        <td>{{ d.nome }}</td>
+                        <td>{{ d.horas_necessarias }}h</td>
+                        <td>{{ d.dias_prova }} dias</td>
+                    </tr>
+                {% else %}
+
+                    <tr>
+                        <td colspan="3">Nenhuma disciplina coube no seu tempo disponível.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <br>
+
+        <a href="/">Fazer novo planejamento</a>
+    {% endif %}
+
+    <script>
+        let contador = 1;
+
+        function adicionarDisciplina() {
+            contador++;
+            const container = document.getElementById('disciplinas_container');
+            const div = document.createElement('div');
+            div.className = 'disciplina-item';
+            div.innerHTML = `
+                <h4>Disciplina ${contador}</h4>
+                <label>Matéria: <input type="text" name="materia[]" required></label><br>
+                <label>Horas: <input type="number" step="0.5" min="0.5" name="horas[]" required></label><br>
+                <label>Dificuldade (1-5): <input type="number" min="1" max="5" name="dif[]" required></label><br>
+                <label>Dias para a Prova: <input type="number" min="0" name="dias[]" required></label><br>
+                <button type="button" onclick="removerDisciplina(this)">Remover Disciplina</button>
+                <hr>
+            `;
+            container.appendChild(div);
+        }
+
+        function removerDisciplina(botao) {
+            botao.parentElement.remove();
+        }
+    </script>
+</body>
+</html>
