@@ -10,7 +10,7 @@ Conteúdo da Disciplina: Programação Dinâmica<br>
 
 ## Vídeo de Apresentação
 
-* 
+* https://youtu.be/PygYx7Ht8rI
 
 ## Sobre 
 
